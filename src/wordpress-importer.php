@@ -1237,5 +1237,17 @@ function wordpress_importer_init() {
 add_action( 'admin_init', 'wordpress_importer_init' );
 
 add_action( 'init', function() {
-	require plugin_dir_path( __FILE__ ) . 'rest-api/site-importer.php';
+	// @TODO probably move this to a dedicated redirects module...?
+	if ( ! post_type_exists( 'jetpack-redirect' ) ) {
+		register_post_type( 'jetpack-redirect', array( 'rewrite' => false ) );
+	}
+
+	require plugin_dir_path( __FILE__ ) . 'rest-api/class-wp-rest-imports-controller.php';
+
+	register_post_type( 'wp_file_import', array(
+		'public'                => false,
+		'rest_controller_class' => 'WP_REST_Imports_Controller',
+		'rest_base'             => 'wp-file-imports',
+		'show_in_rest'          => true,
+	) );
 } );
