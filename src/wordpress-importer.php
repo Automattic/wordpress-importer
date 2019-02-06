@@ -1235,3 +1235,7 @@ function wordpress_importer_init() {
 	register_importer( 'wordpress', 'WordPress', __('Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file.', 'wordpress-importer'), array( $GLOBALS['wp_import'], 'dispatch' ) );
 }
 add_action( 'admin_init', 'wordpress_importer_init' );
+
+add_action( 'init', function() {
+	require plugin_dir_path( __FILE__ ) . 'rest-api/site-importer.php';
+} );
