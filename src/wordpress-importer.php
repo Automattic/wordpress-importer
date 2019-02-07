@@ -65,7 +65,7 @@ class WP_Import extends WP_Importer {
 	 *
 	 * Manages the three separate stages of the WXR import process
 	 */
-	function dispatch() {
+	/*function dispatch() {
 		$this->header();
 
 		$step = empty( $_GET['step'] ) ? 0 : (int) $_GET['step'];
@@ -89,6 +89,13 @@ class WP_Import extends WP_Importer {
 		}
 
 		$this->footer();
+	}*/
+
+	function dispatch() {
+		wp_enqueue_style( 'wp-components' );
+		wp_enqueue_script( 'wp-components' );
+		wp_enqueue_script( 'wordpress-importer', '/wp-content/plugins/wordpress-importer/src/build.js' );
+		echo '<div id="wordpress-importer-root"></div>';
 	}
 
 	/**
