@@ -1221,7 +1221,7 @@ class WP_Import extends WP_Importer {
 } // class_exists( 'WP_Importer' )
 
 function wordpress_importer_init() {
-	if ( ! defined( 'WP_LOAD_IMPORTERS' ) ) {
+	if ( ! ( defined( 'WP_LOAD_IMPORTERS' ) && WP_LOAD_IMPORTERS ) ) {
 		return;
 	}
 
