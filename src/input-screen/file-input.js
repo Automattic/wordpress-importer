@@ -2,8 +2,15 @@
  * External dependencies
  */
 import React, { Fragment, PureComponent } from 'react';
+
+/**
+ * WordPress dependencies
+ */
 import { Button } from '@wordpress/components';
 
+/**
+ * Internal dependencies
+ */
 import './style.scss';
 
 class FileInput extends PureComponent {
