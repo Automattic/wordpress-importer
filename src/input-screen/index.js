@@ -4,6 +4,10 @@
 import head from 'lodash/head';
 import React, { Fragment, PureComponent } from 'react';
 import { withRouter } from 'react-router'
+
+/**
+ * WordPress dependencies
+ */
 import { Button, DropZoneProvider, DropZone, Icon, TextControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -11,7 +15,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import FileInput from './file-input';
+import FileInput from '../file-input';
 
 const validFileTypes = Object.freeze( [ 'text/xml' ] );
 const isValidFileType = type => validFileTypes.includes( type );
@@ -35,7 +39,7 @@ const uploadImportAttachmentFile = async file => {
 	} );
 };
 
-class FileSelection extends PureComponent {
+class InputScreen extends PureComponent {
 	state = {
 		isFetching: false,
 		file: null,
@@ -146,4 +150,4 @@ export default withSelect( ( select ) => {
 	return {
 		setUploadResult: dispatch( 'wordpress-importer' ).setUploadResult,
 	};
-} )( withRouter( FileSelection ) ) );
+} )( withRouter( InputScreen ) ) );
