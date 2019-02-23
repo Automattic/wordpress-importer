@@ -26,7 +26,7 @@ class FileInput extends PureComponent {
 				<input
 					onChange={ this.onChange }
 					ref={ this.fileInput }
-					style={ { display: 'none' } } 
+					style={ { display: 'none' } }
 					type="file"
 				/>
 				<Button isDefault onClick={ this.onClick }>{ this.props.children }</Button>

@@ -15,7 +15,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import FileInput from '../file-input';
+import FileInput from './file-input';
 
 const validFileTypes = Object.freeze( [ 'text/xml' ] );
 const isValidFileType = type => validFileTypes.includes( type );
