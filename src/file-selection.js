@@ -24,6 +24,7 @@ class FileSelection extends PureComponent {
 	};
 
 	beginImportFromUrl = site_url => {
+		const { setUploadResult } = this.props;
 		console.log( { site_url } );
 		this.setState( { isFetching: true } );
 
@@ -35,6 +36,8 @@ class FileSelection extends PureComponent {
 			.then( response => {
 				this.setState( { isFetching: false } );
 				console.log( { response } );
+				setUploadResult( response );
+				this.props.history.push( '/map' );
 			} )
 			.catch( error => {
 				this.setState( { isFetching: false } );
