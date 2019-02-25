@@ -36,7 +36,13 @@ class FileInput extends PureComponent {
 					style={ { display: 'none' } }
 					type="file"
 				/>
-				<Button isDefault onClick={ this.onClick }>{ this.props.children }</Button>
+				<Button
+					className="wordpress-importer__file-select-button"
+					isDefault
+					onClick={ this.onClick }
+				>
+					{ this.props.children }
+				</Button>
 			</Fragment>
 		);
 	}
