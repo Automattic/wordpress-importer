@@ -148,7 +148,7 @@ class InputScreen extends PureComponent {
 						onClick={ this.beginImport }
 						isPrimary
 					>
-						Begin Import
+						Start Import
 					</Button>
 				</div>
 			</Fragment>

@@ -95,18 +95,24 @@ class AuthorMapping extends PureComponent {
 						</li>
 					); } ) }
 				</ol>
-				
+
 
 				<h3>Import Attachments</h3>
 
 				<CheckboxControl
 					label="Download and import file attachments"
 					checked={ this.state.fetchAttachments }
-					onChange={ fetchAttachments => this.setState( { fetchAttachments } ) } 
+					onChange={ fetchAttachments => this.setState( { fetchAttachments } ) }
 				/>
-				
+
 				<div className="wordpress-importer__div-actions">
-					{ this.state.isImporting ? <div>Importing...</div> : <Button isPrimary onClick={ this.doImport } >Start Import</Button> }
+					<Button
+						isPrimary
+						isBusy={ this.state.isImporting }
+						onClick={ this.doImport }
+					>
+						Finish Import
+					</Button>
 				</div>
 			</div>
 		);
