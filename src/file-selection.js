@@ -16,6 +16,25 @@ import FileInput from './file-input';
 const validFileTypes = Object.freeze( [ 'text/xml' ] );
 const isValidFileType = type => validFileTypes.includes( type );
 
+const fetchWxrForSiteUrl = async site_url =>
+	apiFetch( {
+		method: 'POST',
+		path: 'jetpack/v4/site-importer/fetch-wxr-for-url',
+		data: { site_url },
+	} );
+
+const uploadImportAttachmentFile = async file => {
+	const body = new FormData();
+	body.append( 'import', file );
+	body.append( 'status', 'private' );
+
+	return apiFetch( {
+		method: 'POST',
+		path: '/wordpress-importer/v1/attachment',
+		body,
+	} );
+};
+
 class FileSelection extends PureComponent {
 	state = {
 		isFetching: false,
@@ -23,61 +42,30 @@ class FileSelection extends PureComponent {
 		url: '',
 	};
 
-	beginImportFromUrl = site_url => {
-		const { setUploadResult } = this.props;
-		console.log( { site_url } );
-		this.setState( { isFetching: true } );
-
-		apiFetch( {
-			method: 'POST',
-			path: 'jetpack/v4/site-importer/fetch-wxr-for-url',
-			data: { site_url },
-		} )
-			.then( response => {
-				this.setState( { isFetching: false } );
-				console.log( { response } );
-				setUploadResult( response );
-				this.props.history.push( '/map' );
-			} )
-			.catch( error => {
-				this.setState( { isFetching: false } );
-				console.error( { error } );
-			} );
-	};
-
-	beginImport = () => {
+	beginImport = async () => {
 		const { setUploadResult } = this.props;
 		const { file, url } = this.state;
 
-		if ( url ) {
-			return this.beginImportFromUrl( url );
+		if ( ! ( url || file ) ) {
+			return;
 		}
 
-		if ( file ) {
-			this.setState( {
-				isFetching: true,
-			} );
+		this.setState( {
+			isFetching: true,
+		} );
 
-			const body = new FormData();
-			body.append( 'import', file );
-			body.append( 'status', 'private' );
+		try {
+			const attachmentData = await ( url
+				? fetchWxrForSiteUrl( url )
+				: uploadImportAttachmentFile( file ) );
 
-			apiFetch( {
-				method: 'POST',
-				path: '/wordpress-importer/v1/attachment',
-				body,
-			} )
-				.then( response => {
-					console.log( { response } );
-
-					this.setState( { isFetching: false } );
-					setUploadResult( response );
-					this.props.history.push( '/map' );
-				} )
-				.catch( error => {
-					this.setState( { isFetching: false } );
-					console.error( { error } )
-				} );
+			this.setState( { isFetching: false } );
+			console.log( { attachmentData } );
+			setUploadResult( attachmentData );
+			this.props.history.push( '/map' );
+		} catch ( error ) {
+			console.error( { error } );
+			this.setState( { isFetching: false } );
 		}
 	};
 
