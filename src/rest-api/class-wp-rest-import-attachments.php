@@ -26,6 +26,51 @@ class WP_REST_Import_Attachments {
 			'permission_callback' => array( $this, 'upload_and_import_permissions_check' ),
 			'args' => array(),
 		) );
+
+		register_rest_route( self::NAMESPACE, '/fetch-wxr-for-url', array(
+			'methods' => WP_REST_Server::EDITABLE,
+			'callback' => array( $this, 'fetch_wxr_for_url' ),
+			'permission_callback' => array( $this, 'upload_and_import_permissions_check' ),
+			'args' => array(
+				'site_url' => array(
+					'description' => __( 'The URL of the site for which to fetch a WXR' ),
+					'required' => true,
+					'type' => 'string',
+				),
+			),
+		)
+		);
+	}
+
+	static function fetch_wxr_for_url( $request ) {
+		if ( ! ( class_exists( 'Jetpack' ) && class_exists( 'Jetpack_Client' ) ) ) {
+			return new WP_Error( 'no_jetpack', 'Jetpack classes were not found', array( 'status', '500' ) );
+		}
+
+		$jetpack_site_slug  = Jetpack::build_raw_urls( get_home_url() );
+		$api_path = '/sites/' . $jetpack_site_slug. '/jetpack-site-importer/fetch-wxr-from-url';
+		$params = $request->get_params();
+		$response = Jetpack_Client::wpcom_json_api_request_as_user(
+			$api_path,
+			'2',
+			array(
+				'method' => 'POST',
+				'timeout' => 60,
+			),
+			array( 'site_url' => $params['site_url'] )
+		);
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		$code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $code ) {
+			return new WP_Error( 'wxr_fetch_failed', 'Could not retrieve an archive of the site', array( 'status' => $code ) );
+		}
+
+		$body = wp_remote_retrieve_body( $response );
+		return json_decode( $body );
 	}
 
 	// @TODO: move to its own class

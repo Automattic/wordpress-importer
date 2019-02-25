@@ -19,7 +19,7 @@ const isValidFileType = type => validFileTypes.includes( type );
 const fetchWxrForSiteUrl = async site_url =>
 	apiFetch( {
 		method: 'POST',
-		path: 'jetpack/v4/site-importer/fetch-wxr-for-url',
+		path: 'wordpress-importer/v1/fetch-wxr-for-url',
 		data: { site_url },
 	} );
 
