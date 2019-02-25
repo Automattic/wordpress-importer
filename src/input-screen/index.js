@@ -97,40 +97,54 @@ class InputScreen extends PureComponent {
 		// Only accept files if one isn't already selected
 		const DropZoneTarget = file ? Fragment : DropZoneProvider;
 
+		const hasImportableResource = file || url.length; // We would want to bolster the URL validation eventually
+
 		return (
 			<Fragment>
 				<h2>Import WordPress</h2>
 				<div>Howdy! Upload your WordPress eXtended RSS (WXT) file and we'll import the posts, pages, comments, custom fields, categories, and tags into this site.</div>
 				<div>Choose a WXR (.xml) file to upload, or drop a file here, and your import will begin</div>
-				<div style={ { position: 'relative' } }>
-					<DropZoneTarget>
-						<div className="wordpress-importer__div-actions">
-							Import from file:
-							{ file
-								? ( <span>{ file.name } <Button onClick={ () => this.setState( { file: null } ) } isLink><Icon icon="no" /></Button></span> )
-								: ( <FileInput onFileSelected={ this.handleFileSelection }>Choose file</FileInput> )
-							}
+				<div className="wordpress-importer__div-actions">
+					{ file ? (
+						<div className="wordpress-importer__file-select-action">
+							<span>
+								{ file.name }
+								<Button
+									onClick={ () => this.setState( { file: null } ) }
+									isLink
+								>
+									<Icon icon="no" />
+								</Button>
+							</span>
 						</div>
-						{ ! file && (
-							<div className="wordpress-importer__div-actions">
+					) : (
+						<DropZoneTarget>
+							<div className="wordpress-importer__url-input-action">
 								<TextControl
 									label="Import from url:"
 									onChange={ ( url ) => this.setState( { url } ) }
 									value={ url }
 								/>
 							</div>
-						) }
-						<DropZone
-							onFilesDrop={ this.handleFileSelection }
-							onHTMLDrop={ this.handleFileSelection }
-							onDrop={ this.handleFileSelection }
-						/>
-					</DropZoneTarget>
+							<div className="wordpress-importer__file-select-action">
+								<FileInput
+									onFileSelected={ this.handleFileSelection }
+								>
+									You can also drag a file here, or click to browse.
+								</FileInput>
+							</div>
+							<DropZone
+								onFilesDrop={ this.handleFileSelection }
+								onHTMLDrop={ this.handleFileSelection }
+								onDrop={ this.handleFileSelection }
+							/>
+						</DropZoneTarget>
+					) }
 				</div>
 				<div className="wordpress-importer__div-actions">
 					<Button
 						isBusy={ isFetching }
-						disabled={ isFetching }
+						disabled={ isFetching || ! hasImportableResource }
 						onClick={ this.beginImport }
 						isPrimary
 					>
