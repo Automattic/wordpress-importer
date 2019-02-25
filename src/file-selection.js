@@ -23,9 +23,32 @@ class FileSelection extends PureComponent {
 		url: '',
 	};
 
+	beginImportFromUrl = site_url => {
+		console.log( { site_url } );
+		this.setState( { isFetching: true } );
+
+		apiFetch( {
+			method: 'POST',
+			path: 'jetpack/v4/site-importer/fetch-wxr-for-url',
+			data: { site_url },
+		} )
+			.then( response => {
+				this.setState( { isFetching: false } );
+				console.log( { response } );
+			} )
+			.catch( error => {
+				this.setState( { isFetching: false } );
+				console.error( { error } );
+			} );
+	};
+
 	beginImport = () => {
 		const { setUploadResult } = this.props;
 		const { file, url } = this.state;
+
+		if ( url ) {
+			return this.beginImportFromUrl( url );
+		}
 
 		if ( file ) {
 			this.setState( {
@@ -52,8 +75,6 @@ class FileSelection extends PureComponent {
 					this.setState( { isFetching: false } );
 					console.error( { error } )
 				} );
-		} else {
-			//@TODO logic for handling URL input here
 		}
 	};
 
