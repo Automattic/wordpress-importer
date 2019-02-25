@@ -4,6 +4,10 @@
 import head from 'lodash/head';
 import React, { Fragment, PureComponent } from 'react';
 import { withRouter } from 'react-router'
+
+/**
+ * WordPress dependencies
+ */
 import { Button, DropZoneProvider, DropZone, Icon, TextControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -35,7 +39,7 @@ const uploadImportAttachmentFile = async file => {
 	} );
 };
 
-class FileSelection extends PureComponent {
+class InputScreen extends PureComponent {
 	state = {
 		isFetching: false,
 		file: null,
@@ -95,11 +99,11 @@ class FileSelection extends PureComponent {
 
 		return (
 			<Fragment>
-				<DropZoneTarget>
-					<h2>Import WordPress</h2>
-					<div>Howdy! Upload your WordPress eXtended RSS (WXT) file and we'll import the posts, pages, comments, custom fields, categories, and tags into this site.</div>
-					<div>Choose a WXR (.xml) file to upload, or drop a file here, and your import will begin</div>
-					{ ! url && (
+				<h2>Import WordPress</h2>
+				<div>Howdy! Upload your WordPress eXtended RSS (WXT) file and we'll import the posts, pages, comments, custom fields, categories, and tags into this site.</div>
+				<div>Choose a WXR (.xml) file to upload, or drop a file here, and your import will begin</div>
+				<div style={ { position: 'relative' } }>
+					<DropZoneTarget>
 						<div className="wordpress-importer__div-actions">
 							Import from file:
 							{ file
@@ -107,31 +111,32 @@ class FileSelection extends PureComponent {
 								: ( <FileInput onFileSelected={ this.handleFileSelection }>Choose file</FileInput> )
 							}
 						</div>
-					) }
-					{ ! file && (
-						<div className="wordpress-importer__div-actions">
-							<TextControl
-								label="Import from url:"
-								onChange={ ( url ) => this.setState( { url } ) }
-								value={ url }
-							/>
-						</div>
-					) }
-					<div>
+						{ ! file && (
+							<div className="wordpress-importer__div-actions">
+								<TextControl
+									label="Import from url:"
+									onChange={ ( url ) => this.setState( { url } ) }
+									value={ url }
+								/>
+							</div>
+						) }
 						<DropZone
 							onFilesDrop={ this.handleFileSelection }
 							onHTMLDrop={ this.handleFileSelection }
 							onDrop={ this.handleFileSelection }
 						/>
-					</div>
-
-					<div className="wordpress-importer__div-actions">
-						{ isFetching
-							? ( <span>Loading…</span> )
-							: ( <Button onClick={ this.beginImport } isPrimary>Begin Import</Button> )
-						}
-					</div>
-				</DropZoneTarget>
+					</DropZoneTarget>
+				</div>
+				<div className="wordpress-importer__div-actions">
+					<Button
+						isBusy={ isFetching }
+						disabled={ isFetching }
+						onClick={ this.beginImport }
+						isPrimary
+					>
+						Begin Import
+					</Button>
+				</div>
 			</Fragment>
 		);
 	}
@@ -146,4 +151,4 @@ export default withSelect( ( select ) => {
 	return {
 		setUploadResult: dispatch( 'wordpress-importer' ).setUploadResult,
 	};
-} )( withRouter( FileSelection ) ) );
+} )( withRouter( InputScreen ) ) );
