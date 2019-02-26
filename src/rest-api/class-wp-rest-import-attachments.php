@@ -65,12 +65,13 @@ class WP_REST_Import_Attachments {
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
+		$body = json_decode( wp_remote_retrieve_body( $response ) );
+
 		if ( 200 !== $code ) {
-			return new WP_Error( 'wxr_fetch_failed', 'Could not retrieve an archive of the site', array( 'status' => $code ) );
+			return new WP_Error( 'wxr_fetch_failed', $body->message, array( 'status' => $code ) );
 		}
 
-		$body = wp_remote_retrieve_body( $response );
-		return json_decode( $body );
+		return $body;
 	}
 
 	// @TODO: move to its own class
