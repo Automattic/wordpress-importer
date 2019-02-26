@@ -47,7 +47,7 @@ class InputScreen extends PureComponent {
 	};
 
 	beginImport = async () => {
-		const { setUploadResult } = this.props;
+		const { setUploadResult, setImportStep } = this.props;
 		const { file, url } = this.state;
 
 		if ( ! ( url || file ) ) {
@@ -66,6 +66,7 @@ class InputScreen extends PureComponent {
 			this.setState( { isFetching: false } );
 			console.log( { attachmentData } );
 			setUploadResult( attachmentData );
+			setImportStep( 2 );
 			this.props.history.push( '/map' );
 		} catch ( error ) {
 			console.error( { error } );
@@ -164,5 +165,6 @@ export default withSelect( ( select ) => {
 } )( withDispatch( ( dispatch ) => {
 	return {
 		setUploadResult: dispatch( 'wordpress-importer' ).setUploadResult,
+		setImportStep: dispatch( 'wordpress-importer' ).setImportStep,
 	};
 } )( withRouter( InputScreen ) ) );

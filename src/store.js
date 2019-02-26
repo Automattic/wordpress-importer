@@ -6,7 +6,11 @@ import { registerStore } from '@wordpress/data';
 const DEFAULT_STATE = {
 	nonce: null,
 	importAuthors: [],
+	// importStep: 'ROOT',
+	importStep: 1,
 };
+
+const IMPORT_STEP_SET = 'IMPORT_STEP_SET';
 
 registerStore( 'wordpress-importer', {
 	reducer( state = DEFAULT_STATE, action ) {
@@ -16,6 +20,11 @@ registerStore( 'wordpress-importer', {
 					...state,
 					nonce: action.nonce,
 					importAuthors: action.importAuthors,
+				};
+			case IMPORT_STEP_SET:
+				return {
+					...state,
+					importStep: action.importStep,
 				};
 		}
 		return state;
@@ -29,6 +38,13 @@ registerStore( 'wordpress-importer', {
 				importAuthors: result.authors,
 			};
 		},
+		setImportStep( importStep ) {
+			console.log( {importStep} );
+			return {
+				type: IMPORT_STEP_SET,
+				importStep,
+			};
+		},
 	},
 
 	selectors: {
@@ -37,6 +53,9 @@ registerStore( 'wordpress-importer', {
 		},
 		getImportAuthors( state ) {
 			return state.importAuthors;
+		},
+		getImportStep( state ) {
+			return state.importStep;
 		},
 	}
 } );

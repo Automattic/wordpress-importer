@@ -3,8 +3,8 @@
  */
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router'
-import { withSelect } from '@wordpress/data';
-import { Link } from 'react-router-dom';
+import { withSelect, withDispatch } from '@wordpress/data';
+import { Link, Redirect } from 'react-router-dom';
 import apiFetch from '@wordpress/api-fetch';
 import { Button, CheckboxControl } from '@wordpress/components';
 
@@ -24,6 +24,7 @@ class AuthorMapping extends PureComponent {
 
 	doImport = () => {
 		const { authors, fetchAttachments } = this.state;
+		const { setImportStep } = this.props;
 
 		this.setState( { isImporting: true }, () => {
 			apiFetch( {
@@ -37,6 +38,8 @@ class AuthorMapping extends PureComponent {
 				.then( response => {
 					this.setState( { isImporting: false } );
 					console.log( response );
+					setImportStep( 3 );
+
 					this.props.history.push( '/complete' );
 				} )
 				.catch( error => {
@@ -95,16 +98,16 @@ class AuthorMapping extends PureComponent {
 						</li>
 					); } ) }
 				</ol>
-				
+
 
 				<h3>Import Attachments</h3>
 
 				<CheckboxControl
 					label="Download and import file attachments"
 					checked={ this.state.fetchAttachments }
-					onChange={ fetchAttachments => this.setState( { fetchAttachments } ) } 
+					onChange={ fetchAttachments => this.setState( { fetchAttachments } ) }
 				/>
-				
+
 				<div className="wordpress-importer__div-actions">
 					{ this.state.isImporting ? <div>Importing...</div> : <Button isPrimary onClick={ this.doImport } >Start Import</Button> }
 				</div>
@@ -118,4 +121,12 @@ export default withSelect( ( select ) => {
 		siteAuthors: select( 'core' ).getAuthors(),
 		importAuthors: select( 'wordpress-importer' ).getImportAuthors(),
 	};
-} )( withRouter( AuthorMapping ) );
+} )(
+	withDispatch( ( dispatch ) => {
+		return {
+			setImportStep: dispatch( 'wordpress-importer' ).setImportStep,
+		};
+	} )(
+		withRouter( AuthorMapping )
+	)
+);
