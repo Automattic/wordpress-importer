@@ -68,7 +68,8 @@ class WP_REST_Import_Attachments {
 		$body = json_decode( wp_remote_retrieve_body( $response ) );
 
 		if ( 200 !== $code ) {
-			return new WP_Error( 'wxr_fetch_failed', $body->message, array( 'status' => $code ) );
+			$message = $body->message ? $body->message : __( 'Could not retrieve an archive of the site', 'wordpress-importer' );
+			return new WP_Error( 'wxr_fetch_failed', $message, array( 'status' => $code ) );
 		}
 
 		return $body;
