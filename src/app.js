@@ -31,8 +31,10 @@ class App extends PureComponent {
 						<Link to="/map">/map</Link><br />
 						<Link to="/complete">/complete</Link><br />
 						<Route exact path="/" component={ InputScreen } />
-						<Route path="/map" render={ props => console.log( step >= 2, "/map" ) || step >= 2 ? <AuthorMapping { ...props }/> : <Redirect to="/" /> } />
-						<Route path="/complete" render={ props => console.log( step >= 3, "/complete" ) || step >= 3 ? <ImportComplete { ...props }/> : <Redirect to="/map" /> } />
+						{ false && step >= 2 && <Route path="/map" component={ AuthorMapping } /> }
+						{ false && step >= 3 && <Route path="/complete" component={ ImportComplete } /> }
+						{ true && <Route path="/map" render={ props => step >= 2 ? <AuthorMapping { ...props } /> : <Redirect to="/" /> } /> }
+						{ true && <Route path="/complete" render={ props => step >= 3 ? <ImportComplete { ...props }/> : <Redirect to="/map" /> } /> }
 						<Redirect from="*" to="/" />
 					</div>
 				</Switch>
